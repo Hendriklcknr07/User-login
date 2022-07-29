@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
+const usermanager = require("./../models/usermanager");
 
 router.get("/", (req, res)=>{
     res.redirect("/index");
@@ -22,7 +23,21 @@ router.get("/success", (req, res)=>{
 })
 
 router.post("/sign-in", (req, res)=>{
-    res.redirect("/success");
+    if(usermanager.checkPasswordandUsername(req.body.username, req.body.password)){
+        res.redirect("/success");
+    }else{
+        res.redirect("/index");
+    }
 })
+
+router.post("/adduser", (req, res)=>{
+    if(!usermanager.checkTheList(req.body.username)){
+        usermanager.addUser(req.body.username, req.body.password);
+        res.redirect("/success");
+    }else{
+        res.redirect("/sign-up");
+    }
+})
+
 
 module.exports = router;
